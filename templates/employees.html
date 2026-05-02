@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="header">
+    <div>
+        <h1 style="font-size: 1.8rem; font-weight: 700; color: black;">Employee Directory</h1>
+        <p style="color: var(--text-muted);">Manage and monitor your onboarding team</p>
+    </div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+            <input type="text" id="employee-search" placeholder="Search employees..." style="padding: 0.8rem 1rem 0.8rem 2.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; color: black; width: 300px;">
+        </div>
+        <button class="btn btn-primary" onclick="document.getElementById('add-modal').style.display='flex'">
+            <i class="fas fa-plus"></i> Add Employee
+        </button>
+    </div>
+</header>
+
+<div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="Pending">Pending</button>
+    <button class="filter-btn" data-filter="Completed">Completed</button>
+</div>
+
+<style>
+    .filter-btn {
+        padding: 0.5rem 1.2rem;
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .filter-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+</style>
+
+<div class="card animate-fade-in">
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="text-align: left; border-bottom: 1px solid var(--glass-border);">
+                    <th style="padding: 1rem; color: var(--text-muted);">Name</th>
+                    <th style="padding: 1rem; color: var(--text-muted);">Email</th>
+                    <th style="padding: 1rem; color: var(--text-muted);">Role</th>
+                    <th style="padding: 1rem; color: var(--text-muted);">Department</th>
+                    <th style="padding: 1rem; color: var(--text-muted);">Joined</th>
+                    <th style="padding: 1rem; color: var(--text-muted);">Status</th>
+                    <th style="padding: 1rem; color: var(--text-muted);">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr style="border-bottom: 1px solid var(--glass-border); transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 1rem; font-weight: 600;">{{ emp.name }}</td>
+                    <td style="padding: 1rem; color: var(--text-muted);">{{ emp.email }}</td>
+                    <td style="padding: 1rem;">{{ emp.role }}</td>
+                    <td style="padding: 1rem;">{{ emp.department }}</td>
+                    <td style="padding: 1rem; font-size: 0.9rem;">{{ emp.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td style="padding: 1rem;">
+                        <span style="padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.8rem; background: rgba(99, 102, 241, 0.2); color: var(--primary);">
+                            {{ emp.status }}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem;">
+                        <a href="/employees/delete/{{ emp._id }}" onclick="return confirm('Are you sure?')" style="color: var(--accent);"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Employee Modal -->
+<div id="add-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="card" style="width: 100%; max-width: 500px; margin: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2>Add New Employee</h2>
+            <button onclick="document.getElementById('add-modal').style.display='none'" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.5rem;">&times;</button>
+        </div>
+        <form action="/employees" method="POST">
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Full Name</label>
+                <input type="text" name="name" style="width: 100%; padding: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; color: black;" required>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Email Address</label>
+                <input type="email" name="email" style="width: 100%; padding: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; color: black;" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Role</label>
+                    <input type="text" name="role" placeholder="Software Engineer" style="width: 100%; padding: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; color: black;" required>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Department</label>
+                    <input type="text" name="department" placeholder="Engineering" style="width: 100%; padding: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; color: black;" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Register Employee</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('employee-search');
+        const rows = document.querySelectorAll('tbody tr');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
+            rows.forEach(row => {
+                const name = row.cells[0].textContent.toLowerCase();
+                const status = row.cells[5].textContent.trim();
+                
+                const matchesSearch = name.includes(searchTerm);
+                const matchesFilter = activeFilter === 'all' || status === activeFilter;
+
+                if (matchesSearch && matchesFilter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', filterTable);
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filterTable();
+            });
+        });
+    });
+</script>
+{% endblock %}

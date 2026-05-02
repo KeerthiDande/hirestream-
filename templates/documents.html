@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="header">
+    <div>
+        <h1 style="font-size: 1.8rem; font-weight: 700;">Document Verification</h1>
+        <p style="color: var(--text-muted);">Manage employee compliance and documentation</p>
+    </div>
+</header>
+
+<div class="grid-2" style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+    <div class="card animate-fade-in">
+        <h3 style="margin-bottom: 1.5rem;">Upload Document</h3>
+        <form action="/documents" method="POST">
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Employee Name</label>
+                <input type="text" name="employee_name" placeholder="Search employee..." style="width: 100%; padding: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; color: black;" required>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Document Type</label>
+                <select name="doc_type" style="width: 100%; padding: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; color: black; cursor: pointer;">
+                    <option>ID Proof (Passport/Aadhar)</option>
+                    <option>Academic Certificates</option>
+                    <option>Relieving Letter</option>
+                    <option>Bank Details</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Select File</label>
+                <div style="border: 2px dashed var(--glass-border); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: border-color 0.3s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--glass-border)'">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Drag & drop or click to upload</p>
+                    <input type="hidden" name="filename" value="document_sample.pdf">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Submit for Verification</button>
+        </form>
+    </div>
+
+    <div class="card animate-fade-in">
+        <h3 style="margin-bottom: 1.5rem;">Recent Uploads</h3>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="text-align: left; border-bottom: 1px solid var(--glass-border);">
+                        <th style="padding: 1rem; color: var(--text-muted);">Employee</th>
+                        <th style="padding: 1rem; color: var(--text-muted);">Document</th>
+                        <th style="padding: 1rem; color: var(--text-muted);">Date</th>
+                        <th style="padding: 1rem; color: var(--text-muted);">Status</th>
+                        <th style="padding: 1rem; color: var(--text-muted);">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in documents %}
+                    <tr style="border-bottom: 1px solid var(--glass-border);">
+                        <td style="padding: 1rem;">{{ doc.employee_name }}</td>
+                        <td style="padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="far fa-file-pdf" style="color: #ef4444;"></i>
+                                {{ doc.doc_type }}
+                            </div>
+                        </td>
+                        <td style="padding: 1rem; font-size: 0.85rem;">{{ doc.uploaded_at.strftime('%Y-%m-%d') }}</td>
+                        <td style="padding: 1rem;">
+                            <span style="padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);">
+                                {{ doc.status }}
+                            </span>
+                        </td>
+                        <td style="padding: 1rem;">
+                            {% if doc.status == 'Pending' %}
+                            <a href="/documents/verify/{{ doc._id }}" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); color: black; text-decoration: none;">Verify</a>
+                            {% else %}
+                            <i class="fas fa-check-double" style="color: #22c55e;"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if not documents %}
+                    <tr>
+                        <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-muted);">No documents uploaded yet.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

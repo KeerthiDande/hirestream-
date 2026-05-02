@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="header">
+    <div>
+        <h1 style="font-size: 1.8rem; font-weight: 700; color: black;">System Settings</h1>
+        <p style="color: var(--text-muted);">Configure your organization and profile</p>
+    </div>
+</header>
+
+<div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <div class="card animate-fade-in">
+        <h3 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-building" style="color: var(--primary);"></i> Organization Details
+        </h3>
+        <form action="/settings" method="POST">
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Company Name</label>
+                <input type="text" name="company_name" value="{{ config.company_name }}" style="width: 100%; padding: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; color: black;">
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">HR Contact Email</label>
+                <input type="email" value="hr@{{ config.company_name.lower().replace(' ', '') }}.com" style="width: 100%; padding: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-muted);" disabled>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Save Changes</button>
+        </form>
+    </div>
+
+    <div class="card animate-fade-in" style="animation-delay: 0.2s;">
+        <h3 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-user-shield" style="color: var(--secondary);"></i> Admin Security
+        </h3>
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Change Password</label>
+            <input type="password" placeholder="Current Password" style="width: 100%; padding: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; color: black; margin-bottom: 1rem;">
+            <input type="password" placeholder="New Password" style="width: 100%; padding: 0.8rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; color: black;">
+        </div>
+        <button class="btn" style="width: 100%; justify-content: center; background: var(--glass); border: 1px solid var(--glass-border); color: black;">Update Password</button>
+        
+        <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--glass-border);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h4 style="margin-bottom: 0.2rem;">Two-Factor Auth</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Secure your account with 2FA</p>
+            </div>
+            <div style="width: 40px; height: 20px; background: var(--glass-border); border-radius: 20px; position: relative; cursor: pointer;">
+                <div style="width: 16px; height: 16px; background: var(--text-muted); border-radius: 50%; position: absolute; left: 2px; top: 2px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card animate-fade-in" style="margin-top: 2rem; animation-delay: 0.4s;">
+    <h3 style="margin-bottom: 1.5rem;">System Information</h3>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+        <div style="background: var(--glass); padding: 1rem; border-radius: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Version</p>
+            <p style="font-weight: 600;">v2.1.0-beta</p>
+        </div>
+        <div style="background: var(--glass); padding: 1rem; border-radius: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted);">DB Status</p>
+            <p style="font-weight: 600; color: #22c55e;">Connected</p>
+        </div>
+        <div style="background: var(--glass); padding: 1rem; border-radius: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Storage</p>
+            <p style="font-weight: 600;">2.4 GB / 10 GB</p>
+        </div>
+        <div style="background: var(--glass); padding: 1rem; border-radius: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Uptime</p>
+            <p style="font-weight: 600;">14d 6h 22m</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
